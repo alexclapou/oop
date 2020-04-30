@@ -1,0 +1,142 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define INFINITY 2147483647
+
+typedef struct{
+    int x;
+    int y;
+}Point;
+
+void input(char *text, Point points[], int *number_of_points);
+float get_slope(float x1, float y1, float x2, float y2);
+void init_point(Point *points, Point *point);
+int points_already_found(Point *points_found, Point *point, int *number_of_points_found);
+void reset_points_found(Point *points_found, Point *point, int *number_of_points_found);
+void end_of_sequence(Point points_found[], Point points[], int *number_of_points_found, int *sequence_length, float *last_slope_found, int *new_end, int sequence_index, float actual_slope);
+void initialize_last_slope(float *last_slope, Point points, int *sequence_length, Point point1, Point point2);
+
+int main()
+{
+    int index, temp_index, length, start, end, max, point_found, number_of_points, number_of_points_found;
+    char input_text[1001];
+    Point points[101], point1, point2, points_found[101];
+    float slope, last_slope;
+
+    index = 1;
+    temp_index = 0;
+    max = 0;
+    number_of_points_found = 0;
+    slope = -INFINITY;
+    last_slope = -INFINITY;
+    input(input_text, points, &number_of_points);
+    point_found = points_already_found(points_found, &points[0], &number_of_points_found);
+
+    while(index < number_of_points){
+        point_found = points_already_found(points_found, &points[index], &number_of_points_found);
+        if(point_found == 1)
+            end_of_sequence(points_found, points, &number_of_points_found, &length, &last_slope, &temp_index, index, slope);
+        else{
+            if(last_slope == -INFINITY){
+                init_point(&points[index-1], &point1);
+                init_point(&points[index], &point2);
+                last_slope = get_slope(point1.x, point1.y, point2.x, point2.y);
+                length++;
+                }
+            else{
+                init_point(&points[index-1], &point1);
+                init_point(&points[index], &point2);
+                slope = get_slope(point1.x, point1.y, point2.x, point2.y);
+                if(slope == last_slope)
+                    length++;
+                else{
+                    last_slope = slope;
+                    length = 1;
+                    temp_index = index-1;
+                }
+            }
+        }
+        if(length > max){
+            start = temp_index;
+            max = length;
+            end = index;
+        }
+        index++;
+    }
+    while(start <= end){
+        printf("%d %d ", points[start].x, points[start].y);
+        start++;
+    }
+}
+
+void input(char *input_text, Point points[], int *number_of_points)
+{
+    char *ptr;
+    int number;
+
+    scanf("%[^\n]s", input_text);
+    ptr = strtok(input_text, " ");
+    *number_of_points = 0;
+    while(ptr != NULL){
+        number = atoi(ptr);
+        points[*number_of_points].x = number;
+        ptr = strtok(NULL, " ");
+        number = atoi(ptr);
+        points[*number_of_points].y = number;
+        ptr = strtok(NULL, " ");
+        (*number_of_points)++;
+    }
+}
+
+float get_slope(float x1, float y1, float x2, float y2)
+{
+    float delta_x, delta_y;
+
+    delta_x = x2 - x1;
+    delta_y = y2 - y1;
+    if(delta_x == 0)
+        return INFINITY;
+    else
+        return delta_y / delta_x;
+}
+
+void init_point(Point *points, Point *point)
+{
+    point->x = points->x;
+    point->y = points->y;
+}
+
+int points_already_found(Point *points_found, Point *point, int *number_of_points_found)
+{
+    int index;
+
+    index = 0;
+    while(index < *number_of_points_found)
+    {
+        if(points_found[index].x == point->x && points_found[index].y == point->y)
+            return 1;
+        index++;
+    }
+    points_found[index].x = point->x;
+    points_found[index].y = point->y;
+    (*number_of_points_found)++;
+    return 0;
+}
+
+void reset_points_found(Point *points_found, Point *point, int *number_of_points_found)
+{
+    points_found[0].x = point->x;
+    points_found[0].y = point->y;
+    *number_of_points_found = 0;
+}
+
+
+void end_of_sequence(Point points_found[], Point points[], int *number_of_points_found, int *sequence_length, float *last_slope_found, int *new_end, int sequence_index, float actual_slope)
+{
+    reset_points_found(points_found, &points[sequence_index], number_of_points_found);
+    points_already_found(points_found, &points[sequence_index], number_of_points_found);
+    *last_slope_found = actual_slope;
+    *sequence_length = 1;
+    (*new_end)++;
+}

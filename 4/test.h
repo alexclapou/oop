@@ -1,0 +1,72 @@
+#pragma once
+#include "ingredient.h"
+#include "dynamicarray.h"
+#include "repository.h"
+#include "service.h"
+#include "operation.h"
+#include "operationstack.h"
+
+//Ingredient tests
+void create_ingredient__valid_input__ingredient_created();
+void destroy_ingredient__valid_input__ingredient_destroyed();
+void get_cataloging_number__valid_input__get_value();
+void get_state__valid_input__get_value();
+void get_intended_use__valid_input__get_value();
+void get_potency__valid_input__get_value();
+void test__getters();
+void set_state__valid_input__set_value();
+void set_intended_use__valid_input__set_value();
+void set_potency__valid_input__set_value();
+void test__setters();
+void test__Ingredient();
+
+//DynamicArray tests
+void create_DynamicArray__valid_input__DynamicArray_created();
+void destroy_DynamicArray__valid_input__DynamicArray_destroyed();
+void check_Dynamicarray_full__valid_input__return_0();
+void check_Dynamicarray_full__valid_input__return_1();
+void update_DynamicArray_capacity__valid_input__capacity_increased();
+void add_to_DynamicArray__valid_input__ingredient_added();
+void get_length_DynamicArray__valid__input__get_length();
+void update_element_DynamicArray__valid_input__element_updated();
+void delete_element_DynamicArray__valid_input__element_deleted();
+void test__DynamicArray();
+
+//Repository tests
+void create_delete_repository__valid__repository_created_destroyed();
+void get_ingredients__valid_input__return_ingredients();
+void get_number_of_ingredients__valid_input__return_number_of_ingredients();
+void add_ingredient__valid_input__ingredient_added();
+void update_ingredient__valid_input__ingredient_updated();
+void delete_ingredient__valid_input__ingredient_deleted();
+void test__repository();
+
+//Service tests
+void create_delete_service__valid__service_created_destroyed();
+void find_ingredient__ingredient_found__return_index();
+void find_ingredient__ingredient_not_found__return_minus_1();
+void validate__add_ingredient__valid_input__ingredient_added();
+void validate__add_ingredient__invalid_input__return_minus_1();
+void validate__delete_ingredient__valid_input__ingredient_deleted();
+void validate__delete_ingredient__invalid_input__return_minus_1();
+void validate__update_ingredient__valid_input__ingredient_updated();
+void validate__update_ingredient__invalid_input__return_minus_1();
+void swap_ingredients__valid_input__ingredients_swapped();
+void sort_by_state__valid_input__ingredients_sorted_by_state();
+void test__service();
+
+//Operation tests
+void create_destroy_operation__valid__operation_created_destroyed();
+void get_operation_type__valid__return_type();
+void get_operation_ingredient__valid__return_ingredient();
+void test__operation();
+
+//OperationStack tests
+void create_destroy_OperationStack__valid__OperationStack_created_destroyed();
+void push__valid__operation_pushed();
+void pop__valid__operation_pop();
+void stack_is_full__stack_full__returned_1();
+void stack_is_full__valid_not_full__returned_0();
+void stack_is_empty__stack_empty__returned_1();
+void stack_is_empty__stack_not_empty__returned_0();
+void test__OperationStack();

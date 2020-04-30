@@ -1,0 +1,74 @@
+#pragma once
+#include "dynamicvector.h"
+#include "task.h"
+#include "repository.h"
+#include "service.h"
+#include <cassert>
+
+//Task tests
+void get_title__valid_input__task_passed();
+void get_type__valid_input__task_passed();
+void get_last_performed_day__valid_input__task_passed();
+void get_last_performed_month__valid_input__task_passed();
+void get_last_performed_year__valid_input__task_passed();
+void get_vision__valid_input__task_passed();
+void get_times_performed__valid_input__task_passed();
+void to_string__valid_input__return_data_as_string();
+void set_last_performed_day__valid_input__last_performed_day_updated();
+void set_last_performed_month__valid_input__last_performed_month_updated();
+void set_last_performed_year__valid_input__last_performed_year_updated();
+void set_title__valid_input__title_updated();
+void set_type__valid_input__type_updated();
+void set_times_performed__valid_input__time_performed_updated();
+void set_vision__valid_input__vision_updated();
+void test_task();
+
+//DynamicVector tests
+void add__valid_task__task_added();
+void remove__valid_task__task_removed();
+void update__valid_task__task_updated();
+void is_full__valid__false();
+void if_full__valid__true();
+void length__valid__returned_length();
+void resize__valid_input__size_changed();
+void test_dynamicvector();
+
+//Repository tests
+void add__valid_input__task_added();
+void add_to_servant_list__valid_input__task_saved();
+void remove__valid_input__task_removed();
+void get_number_of_tasks__valid_input__number_of_task_returned();
+void get_number_of_saved_tasks__valid_input__number_of_saved_tasks_returned();
+void search_task_title__valid_input__task_found();
+void search_task_title__valid_input__task_not_found();
+void update__valid_input__task_updated();
+void update__valid_input__title_updated();
+void update__valid_input__type_updated();
+void update__valid_input__last_performed_day_updated();
+void update__valid_input__last_performed_month_updated();
+void update__valid_input__last_performed_year_updated();
+void update__valid_input__times_performed_updated();
+void update__valid_input__vision_updated();
+void task_duplicate__valid_title__task_found();
+void get_task__valid_input__task_passed();
+void task_duplicate__invalid_title__task_not_found();
+void test_repository();
+
+//Service tests
+void set_mode__char_A__mode_true();
+void set_mode__char_not_A__mode_false();
+void add__mode_not_A__task_added();
+void add__mode_not_A__task_not_added();
+void add__task_duplicate__task_not_added();
+void update__mode_not_a__returned_0();
+void update__task_not_found__returned_0();
+void update__task_found_mode_A__task_updated();
+void remove__task_not_found__returned_0();
+void remove__mode_not_A__returned_0();
+void next__valid_input__next_task_returned();
+void next__valid_input__first_task_returned();
+void current_task__valid_input__return_current_saved_task();
+void test_service();
+
+
+void all_tests();
