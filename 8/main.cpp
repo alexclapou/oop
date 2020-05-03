@@ -7,7 +7,6 @@ using namespace std;
 
 int main()
 {
-// all_tests();
    UI ui;
     ui.start();
     return 0;

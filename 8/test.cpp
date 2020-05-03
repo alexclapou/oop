@@ -520,13 +520,6 @@ void get_task__valid_input__task_passed()
     remove("/home/alexclapou/fac/oop/folder cu spatii/test_file.txt");
 }
 
-void set_filepath__valid_input__filepath_not_set()
-{
-    Repository repository;
-
-    repository.set_filepath("/home/alexclapou/fac/oop/nu un folder cu spatii/test_file.txt");
-    assert(repository.get_filepath() == "path is empty");
-}
 void set_filepath__valid_input__filepath_set()
 {
     Repository repository;
@@ -554,7 +547,6 @@ void test_repository()
     task_duplicate__valid_title__task_found();
     task_duplicate__invalid_title__task_not_found();
     set_filepath__valid_input__filepath_set();
-    set_filepath__valid_input__filepath_not_set();
 }
 
 void set_mode__char_A__mode_true()

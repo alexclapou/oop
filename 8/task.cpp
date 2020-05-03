@@ -145,11 +145,11 @@ std::string Task::remove_not_needed_strings(std::string entire_line)
 void set_date_as_tm(std::string date_as_string, tm &last_performed_date){
     std::string day, month, year;
 
-    day += date_as_string[0];
-    day += date_as_string[1];
+    month += date_as_string[0];
+    month += date_as_string[1];
 
-    month += date_as_string[3];
-    month += date_as_string[4];
+    day += date_as_string[3];
+    day += date_as_string[4];
 
     year += date_as_string[6];
     year += date_as_string[7];
@@ -183,5 +183,3 @@ std::istream& operator>>(std::istream& is, Task &task_to_add)
     task_to_add.set_vision(result[4]);
     return is;
 }
-
-

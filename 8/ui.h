@@ -7,6 +7,7 @@ class UI{
         Service service;
         void start();
     private:
+        bool os; // true for windows, false for linux, true at start
     void read_command(char input_command[], std::string &function, std::string &function_arguments);
     bool check_input_add_update_function(std::string function_arguments, std::string &title, std::string &type, tm &last_performed_date, int &times_performed, std::string &vision);
     bool check_for_string(std::string string_to_check, int &index, std::string &string_copied);

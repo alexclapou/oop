@@ -3,6 +3,7 @@
 #include <fstream>
 void UI::start()
 {
+    os = true;
     while(true){
         std::string function, function_arguments;
         char input_command[1001];
@@ -173,6 +174,8 @@ void UI::start()
         }
         if(function == "exit")
             break;
+        if (function == "changeos")
+            os = !os;
     }
 }
 
@@ -196,9 +199,15 @@ void UI::list(std::string what_to_print, std::string type, int times_performed)
 
        system_command = service.get_mylistpath();
        if(service.get_extension() == ".csv")
-           system_command = "xed \"" +  system_command +"\"";
+           if(os)
+            system_command = "notepad \"" +  system_command +"\"";
+           else
+               system_command = "xed \"" + system_command + "\"";
        else
-           system_command = "google-chrome \"" + system_command + "\"";
+           if(os)
+            system_command = "start chrome \"" + system_command + "\"";
+           else
+            system_command = "google-chrome \"" + system_command + "\"";
        system(system_command.c_str());
        return;
    }

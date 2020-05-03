@@ -16,12 +16,13 @@ int Repository::add_to_servant_list(Task task)
 {
     if(!mylistpath_exist())
         throw RepositoryException(std::string("there s no path to repository\n"));
-    std::ofstream fout(mylistpath, std::ios::app);
-    if(get_extension() == ".csv")
-        fout<<task.remove_not_needed_strings(task.to_string())<<'\n';
+    if (get_extension() == ".csv") {
+        std::ofstream fout(mylistpath, std::ios::app);
+        fout << task.remove_not_needed_strings(task.to_string()) << '\n';
+        fout.close();
+    }
     else
         write_to_html(task);
-    fout.close();
     return 1;
 }
 
@@ -30,9 +31,20 @@ int Repository::remove_file_data(std::string task_title)
     if(!filepath_exist())
         throw RepositoryException(std::string("there s no path to repository\n"));
     int line_index;
+    std::string path_directory = filepath;
+    size_t what_kind_of_path;
+    what_kind_of_path = path_directory.find("\\");
+    if (what_kind_of_path == std::string::npos) {
+        path_directory.erase(path_directory.begin() + path_directory.find_last_of('/'), path_directory.end());
+        path_directory += "/temp_file.txt";
+    }
+    else {
+        path_directory.erase(path_directory.begin() + path_directory.find_last_of('\\'), path_directory.end());
+        path_directory += "\\temp_file.txt";
+    }
     int line_to_delete_index;
     std::ifstream fin(filepath);
-    std::ofstream fout("temp_file.txt");
+    std::ofstream fout(path_directory);
     std::string line;
 
     line_index = 0;
@@ -46,9 +58,7 @@ int Repository::remove_file_data(std::string task_title)
     fin.close();
     fout.close();
     remove(filepath.c_str());
-    rename("temp_file.txt", filepath.c_str());
-    if(get_number_of_tasks() == 0)
-        remove(filepath.c_str());
+    rename(path_directory.c_str(), filepath.c_str());
     return 1;
 }
 
@@ -56,8 +66,19 @@ int Repository::update_file_data(std::string title, std::string new_type, tm new
 {
     if(!filepath_exist())
         throw RepositoryException(std::string("there s no path to repository\n"));
+    std::string path_directory = filepath;
+    size_t what_kind_of_path;
+    what_kind_of_path = path_directory.find("\\");
+    if (what_kind_of_path == std::string::npos) {
+        path_directory.erase(path_directory.begin() + path_directory.find_last_of('/'), path_directory.end());
+        path_directory += "/temp_file.txt";
+    }
+    else {
+        path_directory.erase(path_directory.begin() + path_directory.find_last_of('\\'), path_directory.end());
+        path_directory += "\\temp_file.txt";
+    }
     std::ifstream fin(filepath);
-    std::ofstream fout("temp_file.txt");
+    std::ofstream fout(path_directory);
     int index_to_update, index_line;
     std::string line;
 
@@ -75,7 +96,7 @@ int Repository::update_file_data(std::string title, std::string new_type, tm new
     fin.close();
     fout.close();
     remove(filepath.c_str());
-    rename("temp_file.txt", filepath.c_str());
+    rename(path_directory.c_str(), filepath.c_str());
     return 1;
 }
 
@@ -136,6 +157,7 @@ std::vector<Task> Repository::get_list_of_tasks()
     Task task;
     while(fin>>task)
         tasks.push_back(task);
+    fin.close();
     return tasks;    
 }
 
@@ -191,16 +213,8 @@ void Repository::set_filepath(std::string new_filepath)
         throw RepositoryException(std::string("bad extension for repository\n"));
     //we already have the txt file /home/alexclapou/fac/oop/7/file.txt
 
-    size_t what_kind_of_path;
-    what_kind_of_path = path_directory.find("\\");
-    if(what_kind_of_path == std::string::npos)
-        path_directory.erase(path_directory.begin()+path_directory.find_last_of('/'), path_directory.end());
-    else
-        path_directory.erase(path_directory.begin()+path_directory.find_last_of('\\'), path_directory.end());
-    std::ifstream fin(path_directory);
+    
     filepath = new_filepath;
-    std::cout<<filepath<<'\n';
-    fin.close();
 }
 
 void Repository::set_mylistpath(std::string new_mylistpath)
@@ -224,14 +238,13 @@ void Repository::set_mylistpath(std::string new_mylistpath)
         path_directory.erase(path_directory.begin()+path_directory.find_last_of('/'), path_directory.end());
     else
         path_directory.erase(path_directory.begin()+path_directory.find_last_of('\\'), path_directory.end());
-    std::ifstream fin(path_directory);
-    path_exist = fin.good();
     mylistpath = new_mylistpath;
     if(mylist_extension == ".html" && !mylistpath.empty()){
-        init_html_file();
+        std::ifstream fin(mylistpath);
+        if(!fin.good())
+            init_html_file();
+        fin.close();
     }
-    std::cout<<mylistpath<<'\n';
-    fin.close();
 }
 
 std::string Repository::get_filepath()
@@ -270,7 +283,18 @@ void Repository::write_to_html(Task task_to_add)
 {
     if(!mylistpath_exist())
         throw RepositoryException(std::string("there s no path to mylist\n"));
-    std::ofstream fout("temp_file.html");
+    std::string path_directory = filepath;
+    size_t what_kind_of_path;
+    what_kind_of_path = path_directory.find("\\");
+    if (what_kind_of_path == std::string::npos) {
+        path_directory.erase(path_directory.begin() + path_directory.find_last_of('/'), path_directory.end());
+        path_directory += "/temp_file.html";
+    }
+    else {
+        path_directory.erase(path_directory.begin() + path_directory.find_last_of('\\'), path_directory.end());
+        path_directory += "\\temp_file.html";
+    }
+    std::ofstream fout(path_directory);
     std::ifstream fin(mylistpath);
     int start_writing_index = 0;
     std::string line;
@@ -289,10 +313,11 @@ void Repository::write_to_html(Task task_to_add)
         else
             fout<<line<<'\n';
     }
-    remove(mylistpath.c_str());
-    rename("temp_file.html", mylistpath.c_str());
     fin.close();
     fout.close();
+    remove(mylistpath.c_str());
+    rename(path_directory.c_str() , mylistpath.c_str());
+
 }
 
 void Repository::init_html_file()
