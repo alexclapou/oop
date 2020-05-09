@@ -1,9 +1,11 @@
 #pragma once
-#include "repository.h"
+#include "action.h"
 #include "validatetask.h"
 
 class Service{
     private:
+        std::vector<std::unique_ptr<Action>> undo_stack;
+        std::vector<std::unique_ptr<Action>> redo_stack;
         Repository repository;
         bool mode_A = false;
         bool mode_B = false;
@@ -11,6 +13,8 @@ class Service{
         ValidateTask validator;
 
     public:
+        void undo();
+        void redo();
         void set_mode(char mode);
         int add(std::string title, std::string type, tm last_performed_date,  int times_performed, std::string vision);
         int add_to_servant_list(Task current_task);

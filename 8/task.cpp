@@ -62,6 +62,10 @@ int Task::get_last_performed_year()const{
     return times_performed;
 }
 
+tm Task::get_last_performed_date()const{
+    return last_performed_date;
+}
+
 std::string Task::get_vision()const{
     return vision;
 }

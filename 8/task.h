@@ -18,6 +18,7 @@ class Task{
 
         std::string get_title()const;
         std::string get_type()const;
+        tm get_last_performed_date()const;
         int get_last_performed_day()const;
         int get_last_performed_month()const;
         int get_last_performed_year()const;

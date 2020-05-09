@@ -176,6 +176,22 @@ void UI::start()
             break;
         if (function == "changeos")
             os = !os;
+        if(function == "undo"){
+            try{
+                service.undo();
+            }
+            catch(std::exception& e){
+                std::cout<<e.what();
+            }
+        }
+        if(function == "redo"){
+            try{
+                service.redo();
+            }
+            catch(std::exception &e){
+                std::cout<<e.what();
+            }
+        }
     }
 }
 
