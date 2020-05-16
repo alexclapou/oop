@@ -1,13 +1,16 @@
+#include <QtWidgets/QApplication>
 #include <iostream>
 #include <string>
 #include "ui.h"
+#include "gui.h"
 #include "test.h"
 #include <fstream>
 using namespace std;
 
-int main()
+int main(int argc, char *argv[])
 {
-    UI ui;
-    ui.start();
-    return 0;
+    QApplication a(argc, argv);
+    GUI gui;
+    gui.show();
+    return a.exec();
 }

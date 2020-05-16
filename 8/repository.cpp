@@ -201,7 +201,6 @@ int Repository::search_task_title(std::string title)
 void Repository::set_filepath(std::string new_filepath)
 {
     std::string path_directory, extension;
-    bool path_exist;
     size_t file_exist;
 
     path_directory = new_filepath;
@@ -220,7 +219,6 @@ void Repository::set_filepath(std::string new_filepath)
 void Repository::set_mylistpath(std::string new_mylistpath)
 {
     std::string path_directory;
-    bool path_exist;
     size_t file_exist;
 
     path_directory = new_mylistpath;
@@ -296,7 +294,6 @@ void Repository::write_to_html(Task task_to_add)
     }
     std::ofstream fout(path_directory);
     std::ifstream fin(mylistpath);
-    int start_writing_index = 0;
     std::string line;
 
     while(std::getline(fin, line)){
