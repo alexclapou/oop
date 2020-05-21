@@ -15,7 +15,7 @@ int Repository::add_file_data(Task task_to_add)
 int Repository::add_to_servant_list(Task task)
 {
     if(!mylistpath_exist())
-        throw RepositoryException(std::string("there s no path to mylist\n"));
+        throw RepositoryException(std::string("there s no path to repository\n"));
     if (get_extension() == ".csv") {
         std::ofstream fout(mylistpath, std::ios::app);
         fout << task.remove_not_needed_strings(task.to_string()) << '\n';

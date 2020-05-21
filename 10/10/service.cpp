@@ -55,8 +55,6 @@ int Service::add_to_servant_list(Task current_task)
 Task Service::current_task(std::string title)
 {
     int task_index;
-    if(mode_B == false)
-        throw std::string("mode B not selected\n");
 
     task_index = repository.search_task_title(title);
     if(task_index != -1)
@@ -68,8 +66,6 @@ Task Service::current_task(std::string title)
 }
 Task Service::next()
 {
-    if(mode_B == false)
-        throw std::string("mode B not selected\n");
     std::vector<Task> all_tasks = repository.get_list_of_tasks();
     if(saved_tasks_index == all_tasks.size())
         saved_tasks_index = 0;

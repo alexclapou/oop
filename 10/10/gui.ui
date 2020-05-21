@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GUI</class>
+ <widget class="QWidget" name="GUI">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>654</width>
+    <height>483</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>GUI</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QFormLayout" name="formLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="filelocation_label">
+       <property name="text">
+        <string>filelocation</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QPushButton" name="filelocation_button">
+       <property name="text">
+        <string>ok</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="filelocation_lineedi"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0" colspan="2">
+      <widget class="QLabel" name="task_attributes_label">
+       <property name="text">
+        <string>task_attributes</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="5">
+      <widget class="QComboBox" name="mode_combobox">
+       <item>
+        <property name="text">
+         <string>no mode</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>mode A</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>mode B</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="title_label">
+       <property name="text">
+        <string>title</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2" colspan="2">
+      <widget class="QLineEdit" name="title_lineedit"/>
+     </item>
+     <item row="1" column="4" rowspan="5" colspan="2">
+      <widget class="QListWidget" name="task_list_listwidget"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="type_label">
+       <property name="text">
+        <string>type</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2" colspan="2">
+      <widget class="QLineEdit" name="type_lineedit"/>
+     </item>
+     <item row="3" column="0" colspan="2">
+      <widget class="QLabel" name="last_performed_date_label">
+       <property name="text">
+        <string>last performed date</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2" colspan="2">
+      <widget class="QLineEdit" name="last_performed_date_lineedit"/>
+     </item>
+     <item row="4" column="0" colspan="2">
+      <widget class="QLabel" name="times_performed_label">
+       <property name="text">
+        <string>times performed</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="2" colspan="2">
+      <widget class="QLineEdit" name="times_performed_lineedit"/>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="vision_label">
+       <property name="text">
+        <string>vision</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QPushButton" name="add_button">
+       <property name="text">
+        <string>add</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1" colspan="2">
+      <widget class="QPushButton" name="update_button">
+       <property name="text">
+        <string>update</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="3">
+      <widget class="QPushButton" name="remove_button">
+       <property name="text">
+        <string>remove</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="4">
+      <widget class="QPushButton" name="undo_button">
+       <property name="text">
+        <string>undo</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="5">
+      <widget class="QPushButton" name="redo_button">
+       <property name="text">
+        <string>redo</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="2" colspan="2">
+      <widget class="QLineEdit" name="vision_lineedit"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QFormLayout" name="formLayout_2">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+     </property>
+     <item row="0" column="0">
+      <widget class="QLabel" name="mylist_label">
+       <property name="text">
+        <string>mylist</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QPushButton" name="mylist_button">
+       <property name="text">
+        <string>ok</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="mylist_lineedit"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="1" column="2">
+      <widget class="QPushButton" name="open_button">
+       <property name="text">
+        <string>open</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QPushButton" name="save_button">
+       <property name="text">
+        <string>save</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QPushButton" name="next_button">
+       <property name="text">
+        <string>next</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QStackedWidget" name="stackedWidget">
+       <widget class="QWidget" name="page"/>
+       <widget class="QWidget" name="page_2"/>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
