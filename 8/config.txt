@@ -1,0 +1,2 @@
+main_list=/home/alexclapou/fac/oop/folder cu spatii/A.txt
+second_list=

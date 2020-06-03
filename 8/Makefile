@@ -51,9 +51,12 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = action.cpp \
+		csvrepository.cpp \
+		filerepository.cpp \
 		gui.cpp \
+		htmlrepository.cpp \
 		main.cpp \
-		repository.cpp \
+		memoryrepository.cpp \
 		repositoryexception.cpp \
 		service.cpp \
 		task.cpp \
@@ -61,9 +64,12 @@ SOURCES       = action.cpp \
 		ui.cpp \
 		validatetask.cpp 
 OBJECTS       = action.o \
+		csvrepository.o \
+		filerepository.o \
 		gui.o \
+		htmlrepository.o \
 		main.o \
-		repository.o \
+		memoryrepository.o \
 		repositoryexception.o \
 		service.o \
 		task.o \
@@ -144,7 +150,11 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		8.pro action.h \
+		csvrepository.h \
+		filerepository.h \
 		gui.h \
+		htmlrepository.h \
+		memoryrepository.h \
 		repository.h \
 		repositoryexception.h \
 		service.h \
@@ -152,9 +162,12 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		test.h \
 		ui.h \
 		validatetask.h action.cpp \
+		csvrepository.cpp \
+		filerepository.cpp \
 		gui.cpp \
+		htmlrepository.cpp \
 		main.cpp \
-		repository.cpp \
+		memoryrepository.cpp \
 		repositoryexception.cpp \
 		service.cpp \
 		task.cpp \
@@ -342,8 +355,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents action.h gui.h repository.h repositoryexception.h service.h task.h test.h ui.h validatetask.h $(DISTDIR)/
-	$(COPY_FILE) --parents action.cpp gui.cpp main.cpp repository.cpp repositoryexception.cpp service.cpp task.cpp test.cpp ui.cpp validatetask.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents action.h csvrepository.h filerepository.h gui.h htmlrepository.h memoryrepository.h repository.h repositoryexception.h service.h task.h test.h ui.h validatetask.h $(DISTDIR)/
+	$(COPY_FILE) --parents action.cpp csvrepository.cpp filerepository.cpp gui.cpp htmlrepository.cpp main.cpp memoryrepository.cpp repositoryexception.cpp service.cpp task.cpp test.cpp ui.cpp validatetask.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -397,14 +410,38 @@ action.o: action.cpp action.h \
 		task.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o action.o action.cpp
 
+csvrepository.o: csvrepository.cpp csvrepository.h \
+		filerepository.h \
+		repository.h \
+		repositoryexception.h \
+		task.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o csvrepository.o csvrepository.cpp
+
+filerepository.o: filerepository.cpp filerepository.h \
+		repository.h \
+		repositoryexception.h \
+		task.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o filerepository.o filerepository.cpp
+
 gui.o: gui.cpp gui.h \
 		service.h \
 		action.h \
 		repository.h \
 		repositoryexception.h \
 		task.h \
-		validatetask.h
+		validatetask.h \
+		memoryrepository.h \
+		filerepository.h \
+		csvrepository.h \
+		htmlrepository.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o gui.o gui.cpp
+
+htmlrepository.o: htmlrepository.cpp htmlrepository.h \
+		filerepository.h \
+		repository.h \
+		repositoryexception.h \
+		task.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o htmlrepository.o htmlrepository.cpp
 
 main.o: main.cpp ui.h \
 		service.h \
@@ -413,14 +450,17 @@ main.o: main.cpp ui.h \
 		repositoryexception.h \
 		task.h \
 		validatetask.h \
-		gui.h \
-		test.h
+		memoryrepository.h \
+		filerepository.h \
+		csvrepository.h \
+		htmlrepository.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
-repository.o: repository.cpp repository.h \
+memoryrepository.o: memoryrepository.cpp memoryrepository.h \
+		repository.h \
 		repositoryexception.h \
 		task.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o repository.o repository.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o memoryrepository.o memoryrepository.cpp
 
 repositoryexception.o: repositoryexception.cpp repositoryexception.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o repositoryexception.o repositoryexception.cpp
@@ -430,28 +470,20 @@ service.o: service.cpp service.h \
 		repository.h \
 		repositoryexception.h \
 		task.h \
-		validatetask.h
+		validatetask.h \
+		memoryrepository.h \
+		filerepository.h \
+		csvrepository.h \
+		htmlrepository.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o service.o service.cpp
 
 task.o: task.cpp task.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o task.o task.cpp
 
-test.o: test.cpp test.h \
-		task.h \
-		repository.h \
-		repositoryexception.h \
-		service.h \
-		action.h \
-		validatetask.h
+test.o: test.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o test.o test.cpp
 
-ui.o: ui.cpp ui.h \
-		service.h \
-		action.h \
-		repository.h \
-		repositoryexception.h \
-		task.h \
-		validatetask.h
+ui.o: ui.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o ui.o ui.cpp
 
 validatetask.o: validatetask.cpp validatetask.h \

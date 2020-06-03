@@ -1,5 +1,38 @@
 #include "service.h"
 #include <iostream>
+#include <fstream>
+
+Service::Service(){
+    std::ifstream open_config("config.txt");
+    std::string main_list, second_list;
+
+    std::getline(open_config, main_list);
+    std::getline(open_config, second_list);
+    
+    std::string filepath = main_list.substr(main_list.find("=")+1);
+    std::string mylistpath = second_list.substr(second_list.find("=")+1);
+    if(filepath.empty()){
+        main_repository = new MemoryRepository;
+    }
+    else
+        main_repository = new FileRepository(filepath);
+    if(mylistpath.empty()){
+        second_repository = new MemoryRepository;
+    }
+    else{
+        std::string extension;
+        int extension_position = mylistpath.find_last_of('.');
+        extension = mylistpath.substr(extension_position);
+
+        if(extension == ".csv"){
+            second_repository = new CSVRepository("", mylistpath);
+        }
+        else{
+            second_repository = new HTMLRepository("", mylistpath);
+        }
+    }
+
+}
 
 void Service::set_mode(char mode)
 {
@@ -28,13 +61,13 @@ int Service::get_mode()
 
 std::vector<Task> Service::get_list_of_tasks()
 {
-    return repository.get_list_of_tasks();
+    return main_repository->get_list_of_tasks();
 }
 
 std::vector<Task> Service::get_list_by_type_and_times_performed(std::string type, int times_performed)
 {
     std::vector<Task> tasks_by_type_and_times_performed;
-    std::vector<Task> all_tasks = repository.get_list_of_tasks();
+    std::vector<Task> all_tasks = main_repository->get_list_of_tasks();
     std::copy_if(all_tasks.begin(), 
             all_tasks.end(), 
             std::back_inserter(tasks_by_type_and_times_performed), 
@@ -49,7 +82,7 @@ int Service::add_to_servant_list(Task current_task)
         throw std::string("mode B not selected\n");
     if(current_task == task)
         throw RepositoryException(std::string("there s no task with the given title\n"));
-    return repository.add_to_servant_list(current_task);
+    return second_repository->add(current_task);
 }
 
 Task Service::current_task(std::string title)
@@ -58,9 +91,9 @@ Task Service::current_task(std::string title)
     if(mode_B == false)
         throw std::string("mode B not selected\n");
 
-    task_index = repository.search_task_title(title);
+    task_index = main_repository->search_task_title(title);
     if(task_index != -1)
-        return repository.get_task(task_index);
+        return main_repository->get_task(task_index);
     else{
         Task task;
         return task;
@@ -70,7 +103,7 @@ Task Service::next()
 {
     if(mode_B == false)
         throw std::string("mode B not selected\n");
-    std::vector<Task> all_tasks = repository.get_list_of_tasks();
+    std::vector<Task> all_tasks = main_repository->get_list_of_tasks();
     if(saved_tasks_index == all_tasks.size())
         saved_tasks_index = 0;
     return all_tasks.at(saved_tasks_index++);
@@ -100,42 +133,42 @@ void Service::redo(){
 
 int Service::add(std::string title, std::string type, tm last_performed_date,  int times_performed, std::string vision)
 {
-    if(task_duplicate(title))
+    if(main_repository->search_task_title(title) != -1)
         throw RepositoryException(std::string("there s already a task with this title\n"));
     if(mode_A != true)
         throw std::string("mode A not selected\n");
     Task task_to_add(title, type, last_performed_date, times_performed, vision);
     validator.validate_task(task_to_add);
     //if we re here then we re ok with adding the given task
-    std::unique_ptr<ActionAdd> new_action = std::make_unique<ActionAdd>(repository, task_to_add);
+    std::unique_ptr<ActionAdd> new_action = std::make_unique<ActionAdd>(main_repository, task_to_add);
     undo_stack.push_back(std::move(new_action));
     //we changed something, clear the redo stack, we will fill it again when undo
     redo_stack.clear();
-    return repository.add_file_data(task_to_add);
+    return main_repository->add(task_to_add);
 }
 
 int Service::update(std::string title, std::string new_type, tm new_last_performed_date,  int new_times_performed, std::string new_vision)
 {
-    if(!task_duplicate(title))
+    if(main_repository->search_task_title(title) == -1)
         throw RepositoryException(std::string("there is no task with the given title\n"));
     if(mode_A != true)
-        throw std::string("mode A not selected\n");
+        throw std::string("modoryRepositorye A not selected\n");
     Task task_to_be_validated(title, new_type, new_last_performed_date, new_times_performed, new_vision);
     validator.validate_task(task_to_be_validated);
     Task old_task;
 
-    old_task = repository.get_task(repository.search_task_title(title));
+    old_task = main_repository->get_task(main_repository->search_task_title(title));
     Task new_task(title, new_type, new_last_performed_date, new_times_performed, new_vision);
-    std::unique_ptr<ActionUpdate> new_action = std::make_unique<ActionUpdate>(repository, old_task, new_task);
+    std::unique_ptr<ActionUpdate> new_action = std::make_unique<ActionUpdate>(main_repository, old_task, new_task);
     undo_stack.push_back(std::move(new_action));
     redo_stack.clear();
-    return repository.update_file_data(title, new_type, new_last_performed_date, new_times_performed, new_vision);
+    return main_repository->update(title, new_type, new_last_performed_date, new_times_performed, new_vision);
 }
 
 int Service::remove(std::string task_title)
 {
-    if(!task_duplicate(task_title))
-        throw RepositoryException(std::string("there is no task with the given title\n"));
+    if(main_repository->search_task_title(task_title) == -1)
+       throw RepositoryException(std::string("there is no task with the given title\n"));
     if(mode_A != true)
         throw std::string("mode A not selected\n");
 
@@ -143,51 +176,26 @@ int Service::remove(std::string task_title)
     int removed_element_position;
     Task task_removed;
 
-    removed_element_position = repository.search_task_title(task_title);
-    task_removed = repository.get_task(removed_element_position);
-    std::cout<<task_removed.get_title();
+    removed_element_position = main_repository->search_task_title(task_title);
+    task_removed = main_repository->get_task(removed_element_position);
 
-    std::unique_ptr<ActionRemove> new_action = std::make_unique<ActionRemove>(repository, task_removed);
+    std::unique_ptr<ActionRemove> new_action = std::make_unique<ActionRemove>(main_repository, task_removed);
     undo_stack.push_back(std::move(new_action));
     redo_stack.clear();
-    return repository.remove_file_data(task_title);
+    return main_repository->remove(task_title);
 }
 
-bool Service::task_duplicate(std::string title)
-{
-    return repository.task_duplicate(title);
-}
 
 int Service::get_number_of_tasks()
 {
-    return repository.get_number_of_tasks();
+    return main_repository->get_number_of_tasks();
 }
 
 int Service::get_number_of_saved_tasks()
 {
-    return repository.get_number_of_saved_tasks();
+    return second_repository->get_number_of_tasks();
 }
 
-void Service::set_filepath(std::string new_filepath)
-{
-    repository.set_filepath(new_filepath);
-}
-
-void Service::set_mylistpath(std::string new_mylistpath)
-{
-    repository.set_mylistpath(new_mylistpath);
-}
-
-std::string Service::get_filepath()
-{
-    return repository.get_filepath();
-}
-
-std::string Service::get_mylistpath()
-{
-    return repository.get_mylistpath();
-}
-std::string Service::get_extension()
-{
-    return repository.get_extension();
+std::vector<Task> Service::get_list_of_saved_tasks(){
+    return second_repository->get_list_of_tasks();
 }

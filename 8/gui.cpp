@@ -1,23 +1,21 @@
 #include "gui.h"
+#include <fstream>
 
 GUI::GUI()
 {
     init_gui();
     connect_signals_slots();
+    populate_list();
 }
 
 void GUI::init_gui(){
     task_list_widget = new QListWidget;
     saved_list_widget = new QStackedWidget;
-    filepath_edit = new QLineEdit;
-    mylist_edit = new QLineEdit;
     title_line_edit = new QLineEdit;
     type_line_edit = new QLineEdit;
     last_performed_date_line_edit = new QLineEdit;
     times_performed_line_edit = new QLineEdit;
     vision_line_edit = new QLineEdit;
-    filepath_button = new QPushButton("ok");
-    mylist_button = new QPushButton("ok");
     add_button = new QPushButton("add");
     open_button = new QPushButton("open mylist");
     remove_button = new QPushButton("remove");
@@ -29,24 +27,14 @@ void GUI::init_gui(){
     exception_message = new QMessageBox;
     current_task = new QLabel;
 
-    QLabel *filepath_label = new QLabel("filelocation");
-    QLabel *mylist_label = new QLabel("mylistlocation");
     QLabel *task_attribute = new QLabel("task attributes");
 
     // main layout is a vertical box combined by two layouts, mode A and mode B both grid
-    QFormLayout *filepath_layout = new QFormLayout;
-    QFormLayout *mylist_layout = new QFormLayout;
     QVBoxLayout *main_layout = new QVBoxLayout{this};
     QGridLayout *mode_A_layout = new QGridLayout;
     QGridLayout *mode_B_layout = new QGridLayout;
     QHBoxLayout *mode_A_buttons = new QHBoxLayout;
     QGridLayout *mode_B_buttons = new QGridLayout;
-
-    filepath_layout->addRow(filepath_label);
-    filepath_layout->addRow(filepath_button, filepath_edit);
-
-    mylist_layout->addRow(mylist_label);
-    mylist_layout->addRow(mylist_button, mylist_edit);
 
     QLabel *title_label = new QLabel("title");
     QLabel *type_label = new QLabel("type");
@@ -86,10 +74,8 @@ void GUI::init_gui(){
     mode_B_layout->addLayout(mode_B_buttons, 1, 1);
     mode_B_layout->addWidget(open_button,1,5);
 
-    main_layout->addLayout(filepath_layout);
     main_layout->addLayout(mode_A_layout);
     main_layout->addLayout(mode_A_buttons);
-    main_layout->addLayout(mylist_layout);
     main_layout->addLayout(mode_B_layout);
 }
 
@@ -145,8 +131,6 @@ void GUI::get_data_from_widget_list()
 
 void GUI::connect_signals_slots(){
     QObject::connect(task_list_widget, &QListWidget::itemSelectionChanged, this, &GUI::get_data_from_widget_list);
-    QObject::connect(filepath_button, &QPushButton::clicked, this, &GUI::set_filepath_widget);
-    QObject::connect(mylist_button, &QPushButton::clicked, this, &GUI::set_mylist_widget);
     QObject::connect(mode_combobox, QOverload<int>::of(&QComboBox::activated), this, &GUI::set_mode);
     QObject::connect(add_button, &QPushButton::clicked, this, &GUI::add_new_task);
     QObject::connect(update_button, &QPushButton::clicked, this, &GUI::update_task);
@@ -184,9 +168,20 @@ void GUI::open(){
         return;
     }
     std::string system_command;
+    std::string extension;
+    std::ifstream config_open("config.txt");
+    std::getline(config_open, system_command);
+    std::getline(config_open, system_command);
 
-    system_command = service.get_mylistpath();
-    if(service.get_extension() == ".csv")
+    system_command = system_command.substr(system_command.find("=")+1);
+    if(system_command.empty()){
+        //memory repo
+    }
+    return;
+    int extension_position = system_command.find_last_of('.');
+    extension = system_command.substr(extension_position);
+    title_line_edit->setText(QString::fromStdString(extension));
+    if(extension == ".csv")
         system_command = "xed \"" + system_command + "\"";
     else
         system_command = "google-chrome \"" + system_command + "\"";
@@ -342,33 +337,4 @@ void GUI::add_new_task()
         return;
     }
     populate_list();
-}
-
-void GUI::set_mylist_widget()
-{
-    if(mylist_edit->text().size() > 0){
-        try{
-            service.set_mylistpath(mylist_edit->text().toStdString());
-        }
-        catch(RepositoryException &ex){
-            exception_message->setText(ex.what());
-            exception_message->exec();
-            return;
-        }
-    }
-}
-
-void GUI::set_filepath_widget()
-{
-    std::string new_filepath = filepath_edit->text().toStdString();
-    try{
-        if(new_filepath.size())
-            service.set_filepath(new_filepath);
-        populate_list();
-    }
-    catch(RepositoryException &ex){
-        exception_message->setText(ex.what());
-        exception_message->exec();
-        return;
-    }
 }

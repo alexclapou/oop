@@ -1,3 +1,4 @@
+/*
 #include "ui.h"
 #include <cassert>
 #include <fstream>
@@ -102,7 +103,8 @@ void UI::start()
                 std::cout<<exception.what();
             }
         }
-        if(function == "save"){
+
+          if(function == "save"){
             for(char character:function_arguments)
                 if(character == ' ')
                     function_arguments.erase(function_arguments.begin());
@@ -121,6 +123,7 @@ void UI::start()
                 std::cout<<exception.what();
             }
         }
+
         if(function == "mylist"){
             std::string what_to_print = "saved tasks";
             list(what_to_print);
@@ -154,24 +157,6 @@ void UI::start()
                 }
             }
         }
-        if(function == "fileLocation"){
-            function_arguments.erase(function_arguments.begin());
-            try{
-                service.set_filepath(function_arguments);
-            }
-            catch(RepositoryException &exception){
-                std::cout<<exception.what();
-            }
-        }
-        if(function == "mylistLocation"){
-            function_arguments.erase(function_arguments.begin());
-            try{
-                service.set_mylistpath(function_arguments);
-            }
-            catch(RepositoryException &exception){
-                std::cout<<exception.what();
-            }
-        }
         if(function == "exit")
             break;
         if (function == "changeos")
@@ -194,7 +179,6 @@ void UI::start()
         }
     }
 }
-
 void UI::list(std::string what_to_print, std::string type, int times_performed)
 {
     std::vector<Task> tasks;
@@ -213,12 +197,11 @@ void UI::list(std::string what_to_print, std::string type, int times_performed)
        }
        std::string system_command;
 
-       system_command = service.get_mylistpath();
-       if(service.get_extension() == ".csv")
-           if(os)
-            system_command = "notepad \"" +  system_command +"\"";
-           else
-               system_command = "xed \"" + system_command + "\"";
+       system_command = "/home/alexclapou/fac/oop/folder cu spatii/A.csv";
+       if(os)
+        system_command = "notepad \"" +  system_command +"\"";
+       else
+           system_command = "xed \"" + system_command + "\"";
        else
            if(os)
             system_command = "start chrome \"" + system_command + "\"";
@@ -241,18 +224,6 @@ void UI::list(std::string what_to_print, std::string type, int times_performed)
        std::cout<<entire_task<<'\n';
    }
 }
-void UI::erase_spaces_at_end(std::string &string_with_spaces)
-{
-    int end;
-
-    end = string_with_spaces.size();
-    end--;
-    while(string_with_spaces[end] == ' '){
-        string_with_spaces.erase(string_with_spaces.begin()+end);
-        end--;
-    }
-}
-
 bool UI::check_input_add_update_function(std::string function_arguments, std::string &title, std::string &type, tm &last_performed_date, int &times_performed, std::string &vision)
 {
     int index;
@@ -312,6 +283,18 @@ bool UI::check_for_string(std::string string_to_check, int &index, std::string &
     return true;
 }
 
+void UI::erase_spaces_at_end(std::string &string_with_spaces)
+{
+    int end;
+
+    end = string_with_spaces.length();
+    end--;
+    while(string_with_spaces[end] == ' '){
+        string_with_spaces.erase(string_with_spaces.begin()+end);
+        end--;
+    }
+}
+
 bool UI::check_for_date(std::string string_to_check, int &index, tm &date)
 {
     if(string_to_check.size() - index < 10)
@@ -364,3 +347,4 @@ void UI::read_command(char input_command[], std::string &function, std::string &
         i++;
     }
 }
+*/
