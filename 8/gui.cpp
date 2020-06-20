@@ -1,4 +1,8 @@
 #include "gui.h"
+#include <QDebug>
+#include <set>
+#include <map>
+#include <QtCharts>
 #include <fstream>
 
 GUI::GUI()
@@ -9,7 +13,9 @@ GUI::GUI()
 }
 
 void GUI::init_gui(){
+    pie_button = new QPushButton("pie");
     task_list_widget = new QListWidget;
+    mylist_list_widget = new QListWidget;
     saved_list_widget = new QStackedWidget;
     title_line_edit = new QLineEdit;
     type_line_edit = new QLineEdit;
@@ -22,8 +28,12 @@ void GUI::init_gui(){
     update_button = new QPushButton("update");
     undo_button = new QPushButton("undo");
     redo_button = new QPushButton("redo");
+    filter_list_widget = new QListWidget;
     save_button = new QPushButton("save");
     next_button = new QPushButton("next");
+    search_button = new QPushButton("filter");
+    search_line_edit1 = new QLineEdit;
+    search_line_edit2 = new QLineEdit;
     exception_message = new QMessageBox;
     current_task = new QLabel;
 
@@ -72,6 +82,10 @@ void GUI::init_gui(){
     mode_B_buttons->addWidget(save_button,0,0);
     mode_B_buttons->addWidget(next_button,1,0);
     mode_B_layout->addLayout(mode_B_buttons, 1, 1);
+    mode_B_buttons->addWidget(search_button, 2, 0);
+    mode_B_buttons->addWidget(pie_button, 2, 1);
+    mode_B_buttons->addWidget(search_line_edit1, 3, 0);
+    mode_B_buttons->addWidget(search_line_edit2, 3, 1);
     mode_B_layout->addWidget(open_button,1,5);
 
     main_layout->addLayout(mode_A_layout);
@@ -140,8 +154,60 @@ void GUI::connect_signals_slots(){
     QObject::connect(save_button, &QPushButton::clicked, this, &GUI::save);
     QObject::connect(open_button, &QPushButton::clicked, this, &GUI::open);
     QObject::connect(next_button, &QPushButton::clicked, this, &GUI::next);
+    QObject::connect(search_button, &QPushButton::clicked, this, &GUI::filter);
+    QObject::connect(pie_button, &QPushButton::clicked, this, &GUI::get_pie);
 }
 
+void GUI::get_pie(){
+    QWidget *new_pie = new QWidget;
+    new_pie->show();
+    std::vector<Task> all_types = service.get_list_of_tasks();
+    std::map<std::string, int> all;
+    for(auto task:all_types)
+        all[task.get_type()]++;
+    QPieSeries *series = new QPieSeries();
+    for(auto t:all)
+        series->append(QString::fromStdString(t.first), t.second);
+    /*
+     * procente
+    series->setLabelsVisible();
+    series->setLabelsPosition(QPieSlice::LabelInsideHorizontal);
+    for(auto slice : series->slices())
+        slice->setLabel(QString("%1%").arg(100*slice->percentage(), 0, 'f', 1));
+        */
+    QChart *chart = new QChart();
+    chart->addSeries(series);
+    chart->addSeries(series);
+    QVBoxLayout *lay = new QVBoxLayout;
+    QChartView *C = new QChartView(chart);
+    lay->addWidget(C);
+    new_pie->setLayout(lay);
+}
+
+void GUI::filter(){
+    if(service.get_mode() != -1){
+        exception_message->setText("not mode B");
+        exception_message->exec();
+        return;
+    }
+    std::string type;
+    int times_performed;
+    type = search_line_edit1->text().toStdString();
+    times_performed = search_line_edit2->text().toInt();
+    QWidget *mylist_window = new QWidget;
+    QVBoxLayout *mode_B_mylist = new QVBoxLayout;
+
+    mode_B_mylist->addWidget(filter_list_widget);
+    filter_list_widget->clear();
+    mylist_window->setLayout(mode_B_mylist);
+    mylist_window->setWindowTitle("mylist");
+    std::vector<Task> mylist;
+    mylist = service.get_list_by_type_and_times_performed(type, times_performed);
+    for(auto task:mylist)
+        filter_list_widget->addItem(QString::fromStdString(task.get_title() + ", " + task.get_type() + ", " + std::to_string(task.get_last_performed_month()) + '-' + std::to_string(task.get_last_performed_day()) + '-' + std::to_string(task.get_last_performed_year()) + ", " + std::to_string(task.get_times_performed()) + ", " + task.get_vision()));
+    mylist_window->show();
+    return;
+}
 
 void GUI::next(){
     try{
@@ -175,9 +241,19 @@ void GUI::open(){
 
     system_command = system_command.substr(system_command.find("=")+1);
     if(system_command.empty()){
-        //memory repo
+        QWidget *mylist_window = new QWidget;
+        QVBoxLayout *mode_B_mylist = new QVBoxLayout;
+
+        mode_B_mylist->addWidget(mylist_list_widget);
+        mylist_list_widget->clear();
+        mylist_window->setLayout(mode_B_mylist);
+        mylist_window->setWindowTitle("mylist");
+        auto mylist = service.get_list_of_saved_tasks();
+        for(auto task:mylist)
+            mylist_list_widget->addItem(QString::fromStdString(task.get_title() + ", " + task.get_type() + ", " + std::to_string(task.get_last_performed_month()) + '-' + std::to_string(task.get_last_performed_day()) + '-' + std::to_string(task.get_last_performed_year()) + ", " + std::to_string(task.get_times_performed()) + ", " + task.get_vision()));
+        mylist_window->show();
+        return;
     }
-    return;
     int extension_position = system_command.find_last_of('.');
     extension = system_command.substr(extension_position);
     title_line_edit->setText(QString::fromStdString(extension));

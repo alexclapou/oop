@@ -17,8 +17,11 @@
 
 class GUI:public QWidget{
     private:
+        QPushButton *pie_button;
         Service service;
         QListWidget *task_list_widget;
+        QListWidget *mylist_list_widget;
+        QListWidget *filter_list_widget;
         QStackedWidget *saved_list_widget;
         QLineEdit *filepath_edit;
         QLineEdit *title_line_edit;
@@ -27,6 +30,9 @@ class GUI:public QWidget{
         QLineEdit *last_performed_date_line_edit;
         QLineEdit *times_performed_line_edit;
         QLineEdit *vision_line_edit;
+        QLineEdit *search_line_edit1;
+        QLineEdit *search_line_edit2;
+        QPushButton *search_button;
         QComboBox *mode_combobox;
         QPushButton *filepath_button;
         QPushButton *mylist_button;
@@ -56,6 +62,8 @@ class GUI:public QWidget{
         void save();
         void set_mode();
         void open();
+        void filter();
+        void get_pie();
     public:
         GUI();
 };
